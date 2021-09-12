@@ -1,0 +1,26 @@
+name: Hug
+main: com.autcraft.com.hug.Hug
+version: 1.0
+description: Give someone a hug
+commands:
+  hug:
+    description: Give a player a hug
+  grouphug:
+    description: com.autcraft.com.hug.Hug everybody
+  hugtoggle:
+    description: Toggle hug acceptance on and off
+  pride:
+    description: Display a Pride Rainbow of Hearts in the chat
+permissions:
+  hug.hug:
+    description: Gives access to /hug command
+  hug.grouphug:
+    description: Give the entire server a group hug
+  hug.hugtoggle:
+    description: Toggle hug acceptance on and off
+  hug.reload:
+    description: Allows access to config reload via /hug reload
+  hug.cooldown_bypass:
+    description: Removes cooldown timer
+  hug.pride:
+    description: Allow use of /pride command
