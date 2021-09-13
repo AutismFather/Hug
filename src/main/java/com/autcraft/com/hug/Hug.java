@@ -47,7 +47,7 @@ public final class Hug extends JavaPlugin {
         cooldown_timer = getConfig().getInt("cooldown_timer");
         grouphug_timer = getConfig().getInt("grouphug_timer");
         pride_timer = getConfig().getInt("pride_timer");
-        hug_distance = getConfig().getInt("minimum_hug_distance");
+        hug_distance = getConfig().getInt("maximum_hug_distance");
         grouphug_string = getConfig().getString("grouphug_string");
 
         // If not already created, make our players.yml file
@@ -540,7 +540,7 @@ public final class Hug extends JavaPlugin {
             return null;
         }
 
-        // Get each optional response, pick one at random 
+        // Get each optional response, pick one at random
         List options = configSection.getList(input.toLowerCase());
         Random r = new Random();
         int key = r.nextInt(options.toArray().length - 0);

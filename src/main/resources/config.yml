@@ -2,7 +2,7 @@ prefix: "[Hug]"
 cooldown_timer: 25
 grouphug_timer: 300
 pride_timer: 300
-minimum_hug_distance: 30
+maximum_hug_distance: 30
 grouphug_string: "gave the entire server a great big group hug!"
 easter_eggs:
     creeper:
