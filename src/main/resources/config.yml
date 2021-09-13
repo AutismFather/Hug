@@ -1,8 +1,10 @@
-prefix: "[Hug]"
+prefix: "[Hug]: "
 cooldown_timer: 25
 grouphug_timer: 300
 pride_timer: 300
 maximum_hug_distance: 30
+hug_receive_string: " gives you a big hug! {^-^}"
+hug_send_string: "You gave a giant hug to "
 grouphug_string: "gave the entire server a great big group hug!"
 easter_eggs:
     creeper:

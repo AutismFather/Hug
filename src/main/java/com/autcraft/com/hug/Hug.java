@@ -28,10 +28,13 @@ public final class Hug extends JavaPlugin {
     private static final HashMap<String, Long> hug_cds = new HashMap<String, Long>();
     private static final HashMap<String, Long> grouphug_cds = new HashMap<String, Long>();
     private static final HashMap<String, Long> pride_cds = new HashMap<String, Long>();
+    private String prefix;
     private int cooldown_timer;
     private int grouphug_timer;
     private int pride_timer;
     private int hug_distance;
+    private String hug_receive_string;
+    private String hug_send_string;
     private String grouphug_string;
     private java.util.UUID UUID;
     private final boolean red = false;
@@ -43,12 +46,17 @@ public final class Hug extends JavaPlugin {
         saveDefaultConfig();
         getConfig().options().copyDefaults(true);
 
-        // Get defaults
-        cooldown_timer = getConfig().getInt("cooldown_timer");
-        grouphug_timer = getConfig().getInt("grouphug_timer");
-        pride_timer = getConfig().getInt("pride_timer");
-        hug_distance = getConfig().getInt("maximum_hug_distance");
-        grouphug_string = getConfig().getString("grouphug_string");
+        // Set Defaults (if not already in the config
+        if(!getConfig().contains("hug_receive_string", true)) {
+            getConfig().addDefault("hug_receive_string", " gives you a big hug! {^-^}");
+            Bukkit.getConsoleSender().sendMessage("Added default string to config.yml: hug_receive_string");
+            saveConfig();
+        }
+        if(!getConfig().contains("hug_send_string", false)) {
+            getConfig().addDefault("hug_send_string", "You gave a giant hug to ");
+            Bukkit.getConsoleSender().sendMessage("Added default string to config.yml: hug_send_string");
+            saveConfig();
+        }
 
         // If not already created, make our players.yml file
         if (!playersFile.exists()) {
@@ -62,6 +70,16 @@ public final class Hug extends JavaPlugin {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // Get defaults
+        prefix = getConfig().getString("prefix");
+        cooldown_timer = getConfig().getInt("cooldown_timer");
+        grouphug_timer = getConfig().getInt("grouphug_timer");
+        pride_timer = getConfig().getInt("pride_timer");
+        hug_distance = getConfig().getInt("maximum_hug_distance");
+        hug_receive_string = getConfig().getString("hug_receive_string");
+        hug_send_string = getConfig().getString("hug_send_string");
+        grouphug_string = getConfig().getString("grouphug_string");
+
         if (command.getName().equalsIgnoreCase("hug")) {
             return hug(sender, args);
         } else if (command.getName().equalsIgnoreCase("hugtoggle")) {
@@ -89,7 +107,7 @@ public final class Hug extends JavaPlugin {
         // First check to see if args[0] is 'reload' because then it's a request to reloag the config
         if (sender.hasPermission("hug.reload") && args.length > 0 && args[0].equalsIgnoreCase("reload")) {
             reloadConfig();
-            sender.sendMessage(msg("com.autcraft.com.hug.Hug Config File Reloaded"));
+            sender.sendMessage(msg("Hug Config Reloaded"));
             return true;
         }
 
@@ -176,8 +194,8 @@ public final class Hug extends JavaPlugin {
         }
 
         // Finally, give the hug!
-        huggee.sendMessage(msg(hugger.getName() + " gives you a big hug! {^-^}"));
-        hugger.sendMessage(msg("You gave " + huggee.getName() + " a big hug."));
+        huggee.sendMessage(msg(hugger.getName() + hug_receive_string));
+        hugger.sendMessage(msg(hug_send_string + huggee.getName()));
         return true;
     }
 
@@ -461,10 +479,10 @@ public final class Hug extends JavaPlugin {
     public String msg(String msg, boolean red) {
         // If red is true, return the message in red.
         if (red) {
-            return ChatColor.RED + "com.autcraft.com.hug.Hug: " + msg;
+            return ChatColor.RED + prefix + msg;
         }
 
-        return ChatColor.GREEN + "com.autcraft.com.hug.Hug: " + msg;
+        return ChatColor.GREEN + prefix + msg;
     }
 
     /*
