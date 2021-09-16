@@ -48,12 +48,12 @@ public final class Hug extends JavaPlugin {
 
         // Set Defaults (if not already in the config
         if(!getConfig().contains("hug_receive_string", true)) {
-            getConfig().addDefault("hug_receive_string", " gives you a big hug! {^-^}");
+            getConfig().addDefault("hug_receive_string", "%hug_sender% gives you a big hug! {^-^}");
             Bukkit.getConsoleSender().sendMessage("Added default string to config.yml: hug_receive_string");
             saveConfig();
         }
         if(!getConfig().contains("hug_send_string", false)) {
-            getConfig().addDefault("hug_send_string", "You gave a giant hug to ");
+            getConfig().addDefault("hug_send_string", "You gave a giant hug to %hug_receiver%");
             Bukkit.getConsoleSender().sendMessage("Added default string to config.yml: hug_send_string");
             saveConfig();
         }
@@ -193,9 +193,15 @@ public final class Hug extends JavaPlugin {
             return true;
         }
 
-        // Finally, give the hug!
-        huggee.sendMessage(msg(hugger.getName() + hug_receive_string));
-        hugger.sendMessage(msg(hug_send_string + huggee.getName()));
+        // Replace vars in stringers
+        hug_receive_string = hug_receive_string.replaceAll("%hug_receiver%", huggee.getName());
+        hug_receive_string = hug_receive_string.replaceAll("%hug_sender%", hugger.getName());
+        hug_send_string = hug_send_string.replaceAll("%hug_receiver%", huggee.getName());
+        hug_send_string = hug_send_string.replaceAll("%hug_sender%", hugger.getName());
+
+        // Finally, send the hug messages
+        huggee.sendMessage(msg(hug_receive_string));
+        hugger.sendMessage(msg(hug_send_string));
         return true;
     }
 

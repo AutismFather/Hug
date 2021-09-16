@@ -1,6 +1,6 @@
 name: Hug
 main: com.autcraft.com.hug.Hug
-version: 1.0
+version: 1.1
 description: Give someone a hug
 commands:
   hug:
