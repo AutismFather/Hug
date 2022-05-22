@@ -4,27 +4,30 @@
  */
 package com.autcraft.com.hug;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * @author Stuart Duncan (AutismFather)
  */
 public final class Hug extends JavaPlugin {
 
-    private File playersFile = new File(getDataFolder(), "players.yml");
+    private final File playersFile = new File(getDataFolder(), "players.yml");
     private static final HashMap<String, Long> hug_cds = new HashMap<String, Long>();
     private static final HashMap<String, Long> grouphug_cds = new HashMap<String, Long>();
     private static final HashMap<String, Long> pride_cds = new HashMap<String, Long>();
@@ -47,12 +50,12 @@ public final class Hug extends JavaPlugin {
         getConfig().options().copyDefaults(true);
 
         // Set Defaults (if not already in the config
-        if(!getConfig().contains("hug_receive_string", true)) {
+        if (!getConfig().contains("hug_receive_string", true)) {
             getConfig().addDefault("hug_receive_string", "%hug_sender% gives you a big hug! {^-^}");
             Bukkit.getConsoleSender().sendMessage("Added default string to config.yml: hug_receive_string");
             saveConfig();
         }
-        if(!getConfig().contains("hug_send_string", false)) {
+        if (!getConfig().contains("hug_send_string", false)) {
             getConfig().addDefault("hug_send_string", "You gave a giant hug to %hug_receiver%");
             Bukkit.getConsoleSender().sendMessage("Added default string to config.yml: hug_send_string");
             saveConfig();
@@ -86,7 +89,7 @@ public final class Hug extends JavaPlugin {
             return hugtoggle(sender, args);
         } else if (command.getName().equalsIgnoreCase("grouphug")) {
             return grouphug(sender);
-        } else if (command.getName().equalsIgnoreCase("pride")){
+        } else if (command.getName().equalsIgnoreCase("pride")) {
             return pride(sender);
         }
         return false;
@@ -122,14 +125,10 @@ public final class Hug extends JavaPlugin {
             return true;
         }
 
-        // If they just did /hug by itself or did /hug help, show this information
-        if ( args.length == 0 || args[0].equalsIgnoreCase("help")) {
-            sender.sendMessage(ChatColor.GOLD + "************************************************************");
-            sender.sendMessage(ChatColor.RED + "/hug <player> " + ChatColor.GOLD + "- Give the <player> a hug");
-            sender.sendMessage(ChatColor.RED + "/grouphug " + ChatColor.GOLD + "- Give the server a giant group hug");
-            sender.sendMessage(ChatColor.RED + "/pride " + ChatColor.GOLD + "- Shows your Pride in the chat for all to see");
-            sender.sendMessage(ChatColor.RED + "/hugtoggle <hugs/grouphugs/pride> <on/off>" + ChatColor.GOLD + "- Turns off the messages in your chat");
-            if( sender.hasPermission("hug.reload") ){
+        // If they just did /hug by itself or did /hug help, show this information. Also turn on word wrapping. Don't just send the message 4 times silly :)
+        if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
+            sender.sendMessage(colorUtils.color("************************************************************\n&c/hug <player> &6- Give the <player> a hug\n&c/grouphug - Give the server a giant group hug\n&c/pride&6 - Shows your Pride in the chat for all to see\n&c/hugtoggle <hugs/grouphugs/pride> <on/off> &6- Turns off the messages in your chat"));
+            if (sender.hasPermission("hug.reload")) {
                 sender.sendMessage(ChatColor.RED + "/hug reload " + ChatColor.GOLD + "- Reloads the config ");
             }
             sender.sendMessage(ChatColor.GOLD + "************************************************************");
@@ -141,7 +140,7 @@ public final class Hug extends JavaPlugin {
         Player huggee = getPlayer(args[0]);
 
         // If huggee is not a player, is it meant to be an easter egg?
-        if( huggee == null || !hugger.canSee(huggee) ) {
+        if (huggee == null || !hugger.canSee(huggee)) {
             // Check for an easter egg message. If there is one, return it. Otherwise, continue on.
             String easter_egg_message = easterEgg(args[0], hugger);
             if (easter_egg_message != null) {
@@ -159,7 +158,7 @@ public final class Hug extends JavaPlugin {
         } else {
             // If there is still a cooldown timer in place, no hugs!
             long timer = cooldown(hugger, cooldown_timer * 1000, "hug");
-            if ( timer > 0) {
+            if (timer > 0) {
                 sender.sendMessage(msg("Sorry, only one hug every " + cooldown_timer + " seconds!", true));
                 return true;
             }
@@ -174,12 +173,11 @@ public final class Hug extends JavaPlugin {
         String currentToggleHugs = playersYml.getString(UUID.toString() + ".hugs");
 
         // If there is an entry and it is set to "off", return an apology and quit.
-        // DEPRICATED
+        // DEPRECATED
         if (currentToggle != null && !currentToggle.isEmpty() && currentToggle.equalsIgnoreCase("off")) {
             sender.sendMessage(msg(huggee.getName() + " is not accepting hugs at the moment. Sorry.", true));
             return true;
-        }
-        else if (currentToggleHugs != null && currentToggleHugs.equalsIgnoreCase("off")){
+        } else if (currentToggleHugs != null && currentToggleHugs.equalsIgnoreCase("off")) {
             sender.sendMessage(msg(huggee.getName() + " is not accepting hugs at the moment. Sorry.", true));
             return true;
         }
@@ -206,11 +204,11 @@ public final class Hug extends JavaPlugin {
     }
 
 
-    boolean pride(CommandSender sender){
+    boolean pride(CommandSender sender) {
 
         // Permission restrictions in case abused
-        if( sender.hasPermission( "hug.pride") == false ){
-            sender.sendMessage(msg("Insufficient permissions for /pride command", true) );
+        if (sender.hasPermission("hug.pride") == false) {
+            sender.sendMessage(msg("Insufficient permissions for /pride command", true));
             return true;
         }
 
@@ -223,9 +221,9 @@ public final class Hug extends JavaPlugin {
         } else {
             // If there is still a cooldown timer in place, no hugs!
             long timer = cooldown(player, pride_timer * 1000, "pride");
-            if ( timer > 0 ) {
-                int minutes = Math.toIntExact( timer / 60 ); // convert seconds (saved in "time") to minutes
-                int seconds = Math.toIntExact( timer % 60 ); // get the rest
+            if (timer > 0) {
+                int minutes = Math.toIntExact(timer / 60); // convert seconds (saved in "time") to minutes
+                int seconds = Math.toIntExact(timer % 60); // get the rest
                 String disMinu = (minutes < 10 ? "0" : "") + minutes; // get minutes and add "0" before if lower than 10
                 String disSec = (seconds < 10 ? "0" : "") + seconds; // get seconds and add "0" before if lower than 10
                 String formattedTime = disMinu + ":" + disSec; //get the whole time
@@ -237,7 +235,7 @@ public final class Hug extends JavaPlugin {
         }
 
         // Since we want individual players to be able to NOT see a hug, iterate over everyone online
-        for( Player huggee: getServer().getOnlinePlayers() ) {
+        for (Player huggee : getServer().getOnlinePlayers()) {
             // If the player is not visible (id, vanish), then don't include them
             if (player.canSee(huggee) == false) {
             } else {
@@ -288,9 +286,9 @@ public final class Hug extends JavaPlugin {
         } else {
             // If there is still a cooldown timer in place, no hugs!
             long timer = cooldown(player, grouphug_timer * 1000, "grouphug");
-            if ( timer > 0 ) {
-                int minutes = Math.toIntExact( timer / 60 ); // convert seconds (saved in "time") to minutes
-                int seconds = Math.toIntExact( timer % 60 ); // get the rest
+            if (timer > 0) {
+                int minutes = Math.toIntExact(timer / 60); // convert seconds (saved in "time") to minutes
+                int seconds = Math.toIntExact(timer % 60); // get the rest
                 String disMinu = (minutes < 10 ? "0" : "") + minutes; // get minutes and add "0" before if lower than 10
                 String disSec = (seconds < 10 ? "0" : "") + seconds; // get seconds and add "0" before if lower than 10
                 String formattedTime = disMinu + ":" + disSec; //get the whole time
@@ -302,11 +300,10 @@ public final class Hug extends JavaPlugin {
         }
 
         // Since we want individual players to be able to NOT see a hug, iterate over everyone online
-        for( Player huggee: getServer().getOnlinePlayers() ) {
+        for (Player huggee : getServer().getOnlinePlayers()) {
             // If the player is not visible (id, vanish), then don't include them
-            if( player.canSee(huggee) == false ){
-            }
-            else {
+            if (player.canSee(huggee) == false) {
+            } else {
                 // Check to see if the huggee has toggled status to deny hugs.
                 UUID = huggee.getUniqueId();
 
@@ -360,7 +357,7 @@ public final class Hug extends JavaPlugin {
         String toggle_pride = "on";
 
         // If there's no arguments passed, OR... the argument passed is not "hugs" and also not "grouphugs", output instructions
-        if( args.length == 0 || (args[0].equalsIgnoreCase("hugs") == false && args[0].equalsIgnoreCase("grouphugs") == false && args[0].equalsIgnoreCase("pride") == false) ){
+        if (args.length == 0 || (args[0].equalsIgnoreCase("hugs") == false && args[0].equalsIgnoreCase("grouphugs") == false && args[0].equalsIgnoreCase("pride") == false)) {
             player.sendMessage(ChatColor.AQUA + "Hugtoggle Usage:");
             player.sendMessage(ChatColor.AQUA + "/hugtoggle hugs on/off");
             player.sendMessage(ChatColor.AQUA + "/hugtoggle grouphugs on/off");
@@ -369,60 +366,57 @@ public final class Hug extends JavaPlugin {
         }
 
         // Hugs?
-        if( args[0].equalsIgnoreCase("hugs") ){
+        if (args[0].equalsIgnoreCase("hugs")) {
             // Set hugs to on
-            if( args.length > 1 && args[1].equalsIgnoreCase("on") ){
+            if (args.length > 1 && args[1].equalsIgnoreCase("on")) {
                 toggle_hugs = "on";
-            } else if (args.length > 1 && args[1].equalsIgnoreCase("off") ){
+            } else if (args.length > 1 && args[1].equalsIgnoreCase("off")) {
                 toggle_hugs = "off";
-            }
-            else {
+            } else {
                 // Get the current toggle and flip it.
-                toggle = playersYml.getString(uuid.toString() + ".hugs");
-                if( toggle == null || toggle == "on" ){
+                toggle = playersYml.getString(uuid + ".hugs");
+                if (toggle == null || toggle == "on") {
                     toggle_hugs = "off";
                 }
             }
             // Set yml value
-            playersYml.set(uuid.toString() + ".hugs", toggle_hugs);
+            playersYml.set(uuid + ".hugs", toggle_hugs);
         }
 
         // Group Hugs?
-        if( args[0].equalsIgnoreCase("grouphugs") ){
+        if (args[0].equalsIgnoreCase("grouphugs")) {
             // Set hugs to on
-            if( args.length > 1 && args[1].equalsIgnoreCase("on") ){
+            if (args.length > 1 && args[1].equalsIgnoreCase("on")) {
                 toggle_grouphugs = "on";
-            } else if (args.length > 1 && args[1].equalsIgnoreCase("off") ){
+            } else if (args.length > 1 && args[1].equalsIgnoreCase("off")) {
                 toggle_grouphugs = "off";
-            }
-            else {
+            } else {
                 // Get the current toggle and flip it.
-                toggle = playersYml.getString(uuid.toString() + ".grouphugs");
-                if( toggle == null || toggle.equalsIgnoreCase("on") ){
+                toggle = playersYml.getString(uuid + ".grouphugs");
+                if (toggle == null || toggle.equalsIgnoreCase("on")) {
                     toggle_grouphugs = "off";
                 }
             }
             // Set yml value
-            playersYml.set(uuid.toString() + ".grouphugs", toggle_grouphugs);
+            playersYml.set(uuid + ".grouphugs", toggle_grouphugs);
         }
 
         // Pride?
-        if( args[0].equalsIgnoreCase("pride") ){
+        if (args[0].equalsIgnoreCase("pride")) {
             // Set hugs to on
-            if( args.length > 1 && args[1].equalsIgnoreCase("on") ){
+            if (args.length > 1 && args[1].equalsIgnoreCase("on")) {
                 toggle_grouphugs = "on";
-            } else if (args.length > 1 && args[1].equalsIgnoreCase("off") ){
+            } else if (args.length > 1 && args[1].equalsIgnoreCase("off")) {
                 toggle_grouphugs = "off";
-            }
-            else {
+            } else {
                 // Get the current toggle and flip it.
-                toggle = playersYml.getString(uuid.toString() + ".pride");
-                if( toggle == null || toggle.equalsIgnoreCase("on") ){
+                toggle = playersYml.getString(uuid + ".pride");
+                if (toggle == null || toggle.equalsIgnoreCase("on")) {
                     toggle_grouphugs = "off";
                 }
             }
             // Set yml value
-            playersYml.set(uuid.toString() + ".pride", toggle_grouphugs);
+            playersYml.set(uuid + ".pride", toggle_grouphugs);
         }
 
         /*
@@ -459,16 +453,16 @@ public final class Hug extends JavaPlugin {
         }
 
         // Now for the final message, this is mostly just to avoid showing "null" as a result if it has not yet been set
-        toggle_hugs = playersYml.getString(uuid.toString() + ".hugs");
-        if( toggle_hugs == null ){
+        toggle_hugs = playersYml.getString(uuid + ".hugs");
+        if (toggle_hugs == null) {
             toggle_hugs = "on";
         }
-        toggle_grouphugs = playersYml.getString(uuid.toString() + ".grouphugs");
-        if( toggle_grouphugs == null ){
+        toggle_grouphugs = playersYml.getString(uuid + ".grouphugs");
+        if (toggle_grouphugs == null) {
             toggle_grouphugs = "on";
         }
-        toggle_pride = playersYml.getString(uuid.toString() + ".pride");
-        if( toggle_pride == null ){
+        toggle_pride = playersYml.getString(uuid + ".pride");
+        if (toggle_pride == null) {
             toggle_pride = "on";
         }
 
@@ -517,18 +511,15 @@ public final class Hug extends JavaPlugin {
         long currentTime = System.currentTimeMillis();
 
         // Check for hug timer vs group hug timer since they're different
-        if( type.equalsIgnoreCase("hug") ) {
-            if (!hug_cds.containsKey(player.getName()) ) {
+        if (type.equalsIgnoreCase("hug")) {
+            if (!hug_cds.containsKey(player.getName())) {
                 hug_cds.put(player.getName(), currentTime);
-            }
-            else if ( currentTime - seconds >= hug_cds.get(player.getName()) ){
+            } else if (currentTime - seconds >= hug_cds.get(player.getName())) {
                 hug_cds.put(player.getName(), currentTime);
-            }
-            else {
+            } else {
                 timer = Math.toIntExact(seconds - (currentTime - hug_cds.get(player.getName()))) / 1000;
             }
-        }
-        else if(type.equalsIgnoreCase("grouphug") ) {
+        } else if (type.equalsIgnoreCase("grouphug")) {
             // Either add a new timer to the index, or check the time left on the timer
             if (!grouphug_cds.containsKey(player.getName())) {
                 grouphug_cds.put(player.getName(), currentTime);
@@ -537,8 +528,7 @@ public final class Hug extends JavaPlugin {
             } else {
                 timer = Math.toIntExact(seconds - (currentTime - grouphug_cds.get(player.getName()))) / 1000;
             }
-        }
-        else if (type.equalsIgnoreCase("pride") ){
+        } else if (type.equalsIgnoreCase("pride")) {
             // Either add a new timer to the index, or check the time left on the timer
             if (!pride_cds.containsKey(player.getName())) {
                 pride_cds.put(player.getName(), currentTime);
