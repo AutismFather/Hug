@@ -127,7 +127,7 @@ public final class Hug extends JavaPlugin {
 
         // If they just did /hug by itself or did /hug help, show this information. Also turn on word wrapping. Don't just send the message 4 times silly :)
         if (args.length == 0 || args[0].equalsIgnoreCase("help")) {
-            sender.sendMessage(colorUtils.color("************************************************************\n&c/hug <player> &6- Give the <player> a hug\n&c/grouphug - Give the server a giant group hug\n&c/pride&6 - Shows your Pride in the chat for all to see\n&c/hugtoggle <hugs/grouphugs/pride> <on/off> &6- Turns off the messages in your chat"));
+            sender.sendMessage(colorUtils.color("&6************************************************************\n&c/hug <player> &6- Give the <player> a hug\n&c/grouphug - Give the server a giant group hug\n&c/pride&6 - Shows your Pride in the chat for all to see\n&c/hugtoggle <hugs/grouphugs/pride> <on/off> &6- Turns off the messages in your chat"));
             if (sender.hasPermission("hug.reload")) {
                 sender.sendMessage(ChatColor.RED + "/hug reload " + ChatColor.GOLD + "- Reloads the config ");
             }
