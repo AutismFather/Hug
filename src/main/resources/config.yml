@@ -6,6 +6,7 @@ maximum_hug_distance: 30
 hug_receive_string: " gives you a big hug! {^-^}"
 hug_send_string: "You gave a giant hug to "
 grouphug_string: "gave the entire server a great big group hug!"
+hug_help_string: "&6************************************************************\n&c/hug <player> &6- Give the <player> a hug\n&c/grouphug - Give the server a giant group hug\n&c/pride&6 - Shows your Pride in the chat for all to see\n&c/hugtoggle <hugs/grouphugs/pride> <on/off> &6- Turns off the messages in your chat"
 easter_eggs:
     creeper:
       - "Trying to hug a creeper is a terrible idea"
