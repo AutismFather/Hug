@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Hug-master" />
         <module name="hug" />
+        <module name="Hug" />
       </profile>
     </annotationProcessing>
   </component>

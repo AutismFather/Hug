@@ -39,6 +39,7 @@ public final class Hug extends JavaPlugin {
     private String hug_receive_string;
     private String hug_send_string;
     private String grouphug_string;
+    private String hug_help_string;
     private java.util.UUID UUID;
     private final boolean red = false;
 
