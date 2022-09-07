@@ -1,7 +1,4 @@
-/*
- * This plugin was created by AutismFather for the Autcraft and Autcraft Obsidian servers.
- * No other servers are permitted to use this plugin in part or in it's entirety.
- */
+
 package com.autcraft.com.hug;
 
 import org.bukkit.Bukkit;
