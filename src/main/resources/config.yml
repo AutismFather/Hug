@@ -2,6 +2,14 @@ prefix: "[Hug]: "
 cooldown_timer: 25
 grouphug_timer: 300
 pride_timer: 300
+pride_options:
+    lgbtq: "c6ea95"
+    transgender: "bdfdb"
+    asexual: "08f5"
+    bisexual: "d51"
+    pansexual: "deb"
+    nonbinary: "ef50"
+    genderfluid: "df509"
 maximum_hug_distance: 30
 hug_receive_string: " gives you a big hug! {^-^}"
 hug_send_string: "You gave a giant hug to "

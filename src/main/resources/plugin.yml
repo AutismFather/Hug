@@ -1,5 +1,5 @@
 name: ${project.artifactId}
-main: com.autcraft.com.hug.Hug
+main: com.autcraft.com.hug.HugPlugin
 version: ${project.version}
 description: Give someone a hug
 commands:
@@ -10,7 +10,7 @@ commands:
   hugtoggle:
     description: Toggle hug acceptance on and off
   pride:
-    description: Display a Pride Rainbow of Hearts in the chat
+    description: Display Pride Hearts in the chat
 permissions:
   hug.hug:
     description: Gives access to /hug command
