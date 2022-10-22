@@ -5,6 +5,9 @@ pride_timer: 300
 pride_options:
     lgbtq: "c6ea95"
     transgender: "bdfdb"
+    asexual: "08f5"
+    bisexual: "d51"
+    pansexual: "deb"
 maximum_hug_distance: 30
 hug_receive_string: " gives you a big hug! {^-^}"
 hug_send_string: "You gave a giant hug to "
